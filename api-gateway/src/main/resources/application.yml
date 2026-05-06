@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: customer-service
+          uri: ${CUSTOMER_SERVICE_URL:http://customer-service:8081}
+          predicates:
+            - Path=/api/v1/customers/**
+
+        - id: sales-point-service
+          uri: ${SALES_POINT_SERVICE_URL:http://sales-point-service:8082}
+          predicates:
+            - Path=/api/v1/sales-points/**
+
+        - id: sales-service
+          uri: ${SALES_SERVICE_URL:http://sales-service:8083}
+          predicates:
+            - Path=/api/v1/sales/**
+
+        - id: inventory-service
+          uri: ${INVENTORY_SERVICE_URL:http://inventory-service:8084}
+          predicates:
+            - Path=/api/v1/inventory/**
+
+server:
+  port: 8080
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics

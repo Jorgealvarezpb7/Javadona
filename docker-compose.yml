@@ -1,0 +1,95 @@
+services:
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "mkt", "-pmkt_secret"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  customer-service:
+    build: ./customer-service
+    ports:
+      - "8081:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_SCHEMA: db_customers
+      DB_USER: mkt
+      DB_PASSWORD: mkt_secret
+
+  sales-point-service:
+    build: ./sales-point-service
+    ports:
+      - "8082:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_SCHEMA: db_sales_points
+      DB_USER: mkt
+      DB_PASSWORD: mkt_secret
+
+  inventory-service:
+    build: ./inventory-service
+    ports:
+      - "8084:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_SCHEMA: db_inventory
+      DB_USER: mkt
+      DB_PASSWORD: mkt_secret
+
+  sales-service:
+    build: ./sales-service
+    ports:
+      - "8083:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      customer-service:
+        condition: service_started
+      sales-point-service:
+        condition: service_started
+      inventory-service:
+        condition: service_started
+    environment:
+      DB_HOST: mysql
+      DB_SCHEMA: db_sales
+      DB_USER: mkt
+      DB_PASSWORD: mkt_secret
+      # Use container port 8080 — host-mapped ports (8081+) are external only
+      SERVICES_CUSTOMER_URL: http://customer-service:8080
+      SERVICES_SALES_POINT_URL: http://sales-point-service:8080
+      SERVICES_INVENTORY_URL: http://inventory-service:8080
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - customer-service
+      - sales-point-service
+      - sales-service
+      - inventory-service
+    environment:
+      CUSTOMER_SERVICE_URL: http://customer-service:8080
+      SALES_POINT_SERVICE_URL: http://sales-point-service:8080
+      SALES_SERVICE_URL: http://sales-service:8080
+      INVENTORY_SERVICE_URL: http://inventory-service:8080
+
+volumes:
+  mysql-data:

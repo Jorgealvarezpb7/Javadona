@@ -1,0 +1,31 @@
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret
+      MYSQL_DATABASE: db_sales_points
+      MYSQL_USER: mkt
+      MYSQL_PASSWORD: mkt_secret
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "mkt", "-pmkt_secret"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - mysql-sales-point-data:/var/lib/mysql
+
+  sales-point-service:
+    build: .
+    ports:
+      - "8082:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      DB_HOST: mysql
+      DB_SCHEMA: db_sales_points
+      DB_USER: mkt
+      DB_PASSWORD: mkt_secret
+
+volumes:
+  mysql-sales-point-data:
