@@ -45,27 +45,26 @@ public class SalePersistenceMapper {
         List<SaleLine> lines = entity.getLines().stream()
                 .map(this::toLineDomain)
                 .toList();
-
-        Sale sale = new Sale();
-        sale.setId(entity.getId());
-        sale.setCustomerId(entity.getCustomerId());
-        sale.setSalesPointId(entity.getSalesPointId());
-        sale.setSaleDate(entity.getSaleDate());
-        sale.setLines(lines);
-        sale.setTotalAmount(entity.getTotalAmount());
-        sale.setPaymentMethod(entity.getPaymentMethod());
-        sale.setStatus(entity.getStatus());
-        return sale;
+        return Sale.reconstruct(
+                entity.getId(),
+                entity.getCustomerId(),
+                entity.getSalesPointId(),
+                entity.getSaleDate(),
+                lines,
+                entity.getTotalAmount(),
+                entity.getPaymentMethod(),
+                entity.getStatus()
+        );
     }
 
     public SaleLine toLineDomain(SaleLineEntity lineEntity) {
-        SaleLine line = new SaleLine();
-        line.setId(lineEntity.getId());
-        line.setProductId(lineEntity.getProductId());
-        line.setProductName(lineEntity.getProductName());
-        line.setQuantity(lineEntity.getQuantity());
-        line.setUnitPrice(lineEntity.getUnitPrice());
-        line.setSubTotal(lineEntity.getSubTotal());
-        return line;
+        return SaleLine.reconstruct(
+                lineEntity.getId(),
+                lineEntity.getProductId(),
+                lineEntity.getProductName(),
+                lineEntity.getQuantity(),
+                lineEntity.getUnitPrice(),
+                lineEntity.getSubTotal()
+        );
     }
 }
