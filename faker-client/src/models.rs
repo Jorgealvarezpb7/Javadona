@@ -1,5 +1,31 @@
 use serde::{Deserialize, Serialize};
 
+// ── Static config (faker-static.toml) ────────────────────────────────────────
+
+#[derive(Debug, Deserialize)]
+pub struct StaticConfig {
+    pub sales_points: Vec<StaticSalesPoint>,
+}
+
+#[derive(Debug, Clone, Deserialize)]
+pub struct StaticSalesPoint {
+    pub name: String,
+    pub street: String,
+    pub city: String,
+    pub postal_code: String,
+    pub province: String,
+    pub phone_number: String,
+    pub opens_at: String,
+    pub closes_at: String,
+}
+
+// ── Paginated response wrapper ────────────────────────────────────────────────
+
+#[derive(Debug, Deserialize)]
+pub struct SpringPage<T> {
+    pub content: Vec<T>,
+}
+
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum DocumentType {

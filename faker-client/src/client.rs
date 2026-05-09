@@ -4,6 +4,7 @@ use serde::{Serialize, de::DeserializeOwned};
 
 use crate::models::*;
 
+#[derive(Clone)]
 pub struct ApiClient {
     http: Client,
     base: String,
@@ -109,6 +110,29 @@ impl ApiClient {
         Ok(())
     }
 
+    async fn get_json<Res>(&self, path: &str) -> Result<Res>
+    where
+        Res: DeserializeOwned,
+    {
+        let url = self.url(path);
+        let res = self
+            .http
+            .get(&url)
+            .send()
+            .await
+            .with_context(|| format!("GET {url}"))?;
+
+        let status = res.status();
+        if !status.is_success() {
+            let body = res.text().await.unwrap_or_default();
+            anyhow::bail!("GET {url} → {status}: {body}");
+        }
+
+        res.json::<Res>()
+            .await
+            .with_context(|| format!("deserialise GET {url}"))
+    }
+
     async fn patch_json<Req, Res>(&self, path: &str, body: &Req) -> Result<Res>
     where
         Req: Serialize,
@@ -138,6 +162,15 @@ impl ApiClient {
 
     pub async fn create_customer(&self, req: &CreateCustomerRequest) -> Result<CustomerResponse> {
         self.post_json("/api/v1/customers", req).await
+    }
+
+    pub async fn get_customer(&self, id: &str) -> Result<CustomerResponse> {
+        self.get_json(&format!("/api/v1/customers/{id}")).await
+    }
+
+    pub async fn get_product(&self, id: &str) -> Result<ProductResponse> {
+        self.get_json(&format!("/api/v1/inventory/products/{id}"))
+            .await
     }
 
     pub async fn add_reward_points(
@@ -171,6 +204,14 @@ impl ApiClient {
     }
 
     // ── Sales Points ──────────────────────────────────────────────────────────
+
+    pub async fn list_sales_points(&self, size: usize) -> Result<Vec<SalesPointResponse>> {
+        self.get_json::<SpringPage<SalesPointResponse>>(&format!(
+            "/api/v1/sales-points?page=0&size={size}"
+        ))
+        .await
+        .map(|p| p.content)
+    }
 
     pub async fn create_sales_point(
         &self,

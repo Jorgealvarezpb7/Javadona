@@ -1,0 +1,49 @@
+[[sales_points]]
+name = "Javadona Chamberí"
+street = "Calle Fuencarral 42"
+city = "Madrid"
+postal_code = "28010"
+province = "Madrid"
+phone_number = "+34911000001"
+opens_at = "08:00:00"
+closes_at = "22:00:00"
+
+[[sales_points]]
+name = "Javadona Gràcia"
+street = "Carrer de Verdi 15"
+city = "Barcelona"
+postal_code = "08012"
+province = "Barcelona"
+phone_number = "+34932000002"
+opens_at = "09:00:00"
+closes_at = "21:00:00"
+
+[[sales_points]]
+name = "Javadona Triana"
+street = "Calle Pureza 8"
+city = "Sevilla"
+postal_code = "41010"
+province = "Sevilla"
+phone_number = "+34954000003"
+opens_at = "08:30:00"
+closes_at = "21:30:00"
+
+[[sales_points]]
+name = "Javadona Ruzafa"
+street = "Calle Sueca 33"
+city = "Valencia"
+postal_code = "46006"
+province = "Valencia"
+phone_number = "+34963000004"
+opens_at = "09:00:00"
+closes_at = "22:00:00"
+
+[[sales_points]]
+name = "Javadona Casco Viejo"
+street = "Calle Correría 12"
+city = "Bilbao"
+postal_code = "48005"
+province = "Vizcaya"
+phone_number = "+34944000005"
+opens_at = "08:00:00"
+closes_at = "20:30:00"
