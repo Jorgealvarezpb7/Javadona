@@ -116,3 +116,7 @@ k8s-logs svc:
 # Register supermarket.local in /etc/hosts (requires sudo)
 k8s-hosts:
     echo "$(minikube ip) supermarket.local" | sudo tee -a /etc/hosts
+
+# Starts the React frontend (in development mode)
+web-dev:
+    cd web && bun run dev
