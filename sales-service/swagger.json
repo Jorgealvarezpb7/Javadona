@@ -1,0 +1,284 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Sales Service API",
+    "description": "Sale creation, refunds, and history",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "http://localhost:8083", "description": "Generated server url" }
+  ],
+  "paths": {
+    "/api/v1/sales": {
+      "get": {
+        "tags": ["sale-controller"],
+        "operationId": "getAllSales",
+        "parameters": [
+          {
+            "name": "pageable",
+            "in": "query",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/Pageable" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/PageSaleResponse" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["sale-controller"],
+        "operationId": "createSale",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateSaleRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/SaleResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sales/{id}/refund": {
+      "post": {
+        "tags": ["sale-controller"],
+        "operationId": "refundSale",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/SaleResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sales/{id}": {
+      "get": {
+        "tags": ["sale-controller"],
+        "operationId": "getSaleById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/SaleResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sales/sales-point/{salesPointId}": {
+      "get": {
+        "tags": ["sale-controller"],
+        "operationId": "getSalesBySalesPoint",
+        "parameters": [
+          {
+            "name": "salesPointId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
+            "name": "pageable",
+            "in": "query",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/Pageable" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/PageSaleResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sales/customer/{customerId}": {
+      "get": {
+        "tags": ["sale-controller"],
+        "operationId": "getSalesByCustomer",
+        "parameters": [
+          {
+            "name": "customerId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
+            "name": "pageable",
+            "in": "query",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/Pageable" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/PageSaleResponse" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateSaleRequest": {
+        "required": ["customerId", "lines", "paymentMethod", "salesPointId"],
+        "type": "object",
+        "properties": {
+          "customerId": { "type": "string", "format": "uuid" },
+          "salesPointId": { "type": "string", "format": "uuid" },
+          "paymentMethod": {
+            "type": "string",
+            "enum": ["CASH", "CARD", "BIZUM"]
+          },
+          "lines": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SaleLineRequest" }
+          }
+        }
+      },
+      "SaleLineRequest": {
+        "required": ["productId", "productName", "unitPrice"],
+        "type": "object",
+        "properties": {
+          "productId": { "type": "string", "format": "uuid" },
+          "productName": { "type": "string" },
+          "quantity": { "minimum": 1, "type": "integer", "format": "int32" },
+          "unitPrice": { "type": "number" }
+        }
+      },
+      "SaleLineResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "productId": { "type": "string", "format": "uuid" },
+          "productName": { "type": "string" },
+          "quantity": { "type": "integer", "format": "int32" },
+          "unitPrice": { "type": "number" },
+          "subTotal": { "type": "number" }
+        }
+      },
+      "SaleResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "customerId": { "type": "string", "format": "uuid" },
+          "salesPointId": { "type": "string", "format": "uuid" },
+          "saleDate": { "type": "string", "format": "date-time" },
+          "lines": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SaleLineResponse" }
+          },
+          "totalAmount": { "type": "number" },
+          "paymentMethod": {
+            "type": "string",
+            "enum": ["CASH", "CARD", "BIZUM"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["PENDING", "COMPLETED", "REFUNDED"]
+          }
+        }
+      },
+      "Pageable": {
+        "type": "object",
+        "properties": {
+          "page": { "minimum": 0, "type": "integer", "format": "int32" },
+          "size": { "minimum": 1, "type": "integer", "format": "int32" },
+          "sort": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "PageSaleResponse": {
+        "type": "object",
+        "properties": {
+          "totalPages": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int64" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SaleResponse" }
+          },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SortObject" }
+          },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "PageableObject": {
+        "type": "object",
+        "properties": {
+          "offset": { "type": "integer", "format": "int64" },
+          "sort": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SortObject" }
+          },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "paged": { "type": "boolean" },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "unpaged": { "type": "boolean" }
+        }
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "direction": { "type": "string" },
+          "nullHandling": { "type": "string" },
+          "ascending": { "type": "boolean" },
+          "property": { "type": "string" },
+          "ignoreCase": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

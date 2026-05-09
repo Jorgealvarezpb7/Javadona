@@ -1,0 +1,411 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Customer Service API",
+    "description": "Customer Identity and Rewards microservice API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "http://localhost:8081", "description": "Generated server url" }
+  ],
+  "paths": {
+    "/api/v1/customers/{id}": {
+      "get": {
+        "tags": ["customer-controller"],
+        "operationId": "getCustomerById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CustomerResponse" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["customer-controller"],
+        "operationId": "updateCustomer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateCustomerRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CustomerResponse" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["customer-controller"],
+        "operationId": "deleteCustomer",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v1/customers": {
+      "get": {
+        "tags": ["customer-controller"],
+        "operationId": "getAllCustomers",
+        "parameters": [
+          {
+            "name": "pageable",
+            "in": "query",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/Pageable" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageCustomerResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["customer-controller"],
+        "operationId": "createCustomer",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateCustomerRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CustomerResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{id}/sales-points/{spId}": {
+      "post": {
+        "tags": ["customer-controller"],
+        "operationId": "addFrequentSalesPoint",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
+            "name": "spId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v1/customers/{id}/rewards": {
+      "get": {
+        "tags": ["customer-controller"],
+        "operationId": "getRewardPoints",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RewardPointsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": ["customer-controller"],
+        "operationId": "addRewardPoints",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RewardPointsRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/RewardPointsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customers/{id}/sales-points": {
+      "get": {
+        "tags": ["customer-controller"],
+        "operationId": "getFrequentSalesPoints",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/FrequentSalesPointsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/customers/document/{type}/{value}": {
+      "get": {
+        "tags": ["customer-controller"],
+        "operationId": "getCustomerByDocument",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "enum": ["DNI", "NIE"] }
+          },
+          {
+            "name": "value",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/CustomerResponse" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "UpdateCustomerRequest": {
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "dateOfBirth": { "type": "string", "format": "date" },
+          "phoneNumber": { "type": "string" },
+          "street": { "type": "string" },
+          "city": { "type": "string" },
+          "postalCode": { "type": "string" },
+          "province": { "type": "string" }
+        }
+      },
+      "CustomerResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "documentType": { "type": "string" },
+          "documentValue": { "type": "string" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "dateOfBirth": { "type": "string", "format": "date" },
+          "phoneNumber": { "type": "string" },
+          "email": { "type": "string" },
+          "street": { "type": "string" },
+          "city": { "type": "string" },
+          "postalCode": { "type": "string" },
+          "province": { "type": "string" },
+          "rewardPoints": { "type": "integer", "format": "int32" },
+          "frequentSalesPoints": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": { "type": "string", "format": "uuid" }
+          },
+          "status": { "type": "string" }
+        }
+      },
+      "CreateCustomerRequest": {
+        "required": [
+          "city",
+          "dateOfBirth",
+          "documentType",
+          "documentValue",
+          "email",
+          "firstName",
+          "lastName",
+          "phoneNumber",
+          "postalCode",
+          "province",
+          "street"
+        ],
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "dateOfBirth": { "type": "string", "format": "date" },
+          "phoneNumber": { "type": "string" },
+          "documentType": { "type": "string", "enum": ["DNI", "NIE"] },
+          "documentValue": { "type": "string" },
+          "email": { "type": "string" },
+          "street": { "type": "string" },
+          "city": { "type": "string" },
+          "postalCode": { "type": "string" },
+          "province": { "type": "string" }
+        }
+      },
+      "RewardPointsRequest": {
+        "type": "object",
+        "properties": {
+          "points": { "minimum": 1, "type": "integer", "format": "int32" }
+        }
+      },
+      "RewardPointsResponse": {
+        "type": "object",
+        "properties": {
+          "customerId": { "type": "string", "format": "uuid" },
+          "rewardPoints": { "type": "integer", "format": "int32" }
+        }
+      },
+      "Pageable": {
+        "type": "object",
+        "properties": {
+          "page": { "minimum": 0, "type": "integer", "format": "int32" },
+          "size": { "minimum": 1, "type": "integer", "format": "int32" },
+          "sort": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "PageCustomerResponse": {
+        "type": "object",
+        "properties": {
+          "totalPages": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int64" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CustomerResponse" }
+          },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SortObject" }
+          },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "PageableObject": {
+        "type": "object",
+        "properties": {
+          "offset": { "type": "integer", "format": "int64" },
+          "sort": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SortObject" }
+          },
+          "unpaged": { "type": "boolean" },
+          "paged": { "type": "boolean" },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "pageNumber": { "type": "integer", "format": "int32" }
+        }
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "direction": { "type": "string" },
+          "nullHandling": { "type": "string" },
+          "ascending": { "type": "boolean" },
+          "property": { "type": "string" },
+          "ignoreCase": { "type": "boolean" }
+        }
+      },
+      "FrequentSalesPointsResponse": {
+        "type": "object",
+        "properties": {
+          "customerId": { "type": "string", "format": "uuid" },
+          "salesPointIds": {
+            "uniqueItems": true,
+            "type": "array",
+            "items": { "type": "string", "format": "uuid" }
+          }
+        }
+      }
+    }
+  }
+}

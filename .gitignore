@@ -26,3 +26,6 @@ application-local.properties
 
 # Docker volumes
 mysql-data/
+
+# Claude
+.claude/settings.local.json
