@@ -472,18 +472,8 @@ pub fn sales_point(rng: &mut impl Rng, index: usize) -> CreateSalesPointRequest 
         postal_code: format!("{}{:03}", prefix, rng.gen_range(0..999u32)),
         province: province.to_string(),
         phone_number: phone,
-        opens_at: LocalTime {
-            hour: open_hour,
-            minute: 0,
-            second: 0,
-            nano: 0,
-        },
-        closes_at: LocalTime {
-            hour: close_hour,
-            minute: 0,
-            second: 0,
-            nano: 0,
-        },
+        opens_at: format!("{:02}:00:00", open_hour),
+        closes_at: format!("{:02}:00:00", close_hour),
     }
 }
 

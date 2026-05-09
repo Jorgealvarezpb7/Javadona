@@ -1,13 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct LocalTime {
-    pub hour: u8,
-    pub minute: u8,
-    pub second: u8,
-    pub nano: u32,
-}
-
 #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum DocumentType {
@@ -113,8 +105,8 @@ pub struct CreateSalesPointRequest {
     pub postal_code: String,
     pub province: String,
     pub phone_number: String,
-    pub opens_at: LocalTime,
-    pub closes_at: LocalTime,
+    pub opens_at: String,
+    pub closes_at: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]
