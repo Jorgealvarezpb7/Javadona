@@ -1,8 +1,5 @@
-import { Welcome } from "../welcome/welcome";
-import { useEffect } from "react";
-import { JavadonaClient } from "~/lib/JavadonaClient";
-
 import type { Route } from "./+types/home";
+import { DashboardGrid } from "~/components/organisms/DashboardGrid";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -15,16 +12,14 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  useEffect(() => {
-    const httpClient = new JavadonaClient("http://localhost:8080");
-    httpClient.customer
-      .getAllCustomers({ page: 0, size: 10 })
-      .then((response) => {
-        console.log("Fetched customers:", response);
-      })
-      .catch((error) => {
-        console.error("Error fetching customers:", error);
-      });
-  }, []);
-  return <Welcome />;
+  return (
+    <main className="min-h-screen bg-zinc-950 p-8">
+      <div className="mx-auto max-w-7xl">
+        <header className="mb-8">
+          <h1 className="text-4xl font-bold text-white">Javadona</h1>
+        </header>
+        <DashboardGrid />
+      </div>
+    </main>
+  );
 }
