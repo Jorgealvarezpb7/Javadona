@@ -1,0 +1,321 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Sales Point Service API",
+    "description": "Store / Sucursal Management microservice",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "http://localhost:8082", "description": "Generated server url" }
+  ],
+  "paths": {
+    "/api/v1/sales-points/{id}": {
+      "get": {
+        "tags": ["sales-point-controller"],
+        "operationId": "getById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/SalesPointResponse" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["sales-point-controller"],
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSalesPointRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/SalesPointResponse" }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["sales-point-controller"],
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v1/sales-points": {
+      "get": {
+        "tags": ["sales-point-controller"],
+        "operationId": "listAll",
+        "parameters": [
+          {
+            "name": "pageable",
+            "in": "query",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/Pageable" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PageSalesPointResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["sales-point-controller"],
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSalesPointRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/SalesPointResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sales-points/{id}/status": {
+      "patch": {
+        "tags": ["sales-point-controller"],
+        "operationId": "changeStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SalesPointStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/SalesPointResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sales-points/city/{city}": {
+      "get": {
+        "tags": ["sales-point-controller"],
+        "operationId": "getByCity",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/SalesPointResponse" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LocalTime": {
+        "type": "object",
+        "properties": {
+          "hour": { "type": "integer", "format": "int32" },
+          "minute": { "type": "integer", "format": "int32" },
+          "second": { "type": "integer", "format": "int32" },
+          "nano": { "type": "integer", "format": "int32" }
+        }
+      },
+      "UpdateSalesPointRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "street": { "type": "string" },
+          "city": { "type": "string" },
+          "postalCode": { "type": "string" },
+          "province": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "opensAt": { "$ref": "#/components/schemas/LocalTime" },
+          "closesAt": { "$ref": "#/components/schemas/LocalTime" }
+        }
+      },
+      "SalesPointResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "street": { "type": "string" },
+          "city": { "type": "string" },
+          "postalCode": { "type": "string" },
+          "province": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "opensAt": { "type": "string" },
+          "closesAt": { "type": "string" },
+          "status": { "type": "string" }
+        }
+      },
+      "CreateSalesPointRequest": {
+        "required": [
+          "city",
+          "closesAt",
+          "name",
+          "opensAt",
+          "phoneNumber",
+          "postalCode",
+          "province",
+          "street"
+        ],
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "street": { "type": "string" },
+          "city": { "type": "string" },
+          "postalCode": { "type": "string" },
+          "province": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "opensAt": { "$ref": "#/components/schemas/LocalTime" },
+          "closesAt": { "$ref": "#/components/schemas/LocalTime" }
+        }
+      },
+      "SalesPointStatusRequest": {
+        "required": ["status"],
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": ["OPEN", "CLOSED", "RENOVATING"]
+          }
+        }
+      },
+      "Pageable": {
+        "type": "object",
+        "properties": {
+          "page": { "minimum": 0, "type": "integer", "format": "int32" },
+          "size": { "minimum": 1, "type": "integer", "format": "int32" },
+          "sort": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "PageSalesPointResponse": {
+        "type": "object",
+        "properties": {
+          "totalPages": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int64" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SalesPointResponse" }
+          },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SortObject" }
+          },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "PageableObject": {
+        "type": "object",
+        "properties": {
+          "offset": { "type": "integer", "format": "int64" },
+          "sort": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SortObject" }
+          },
+          "paged": { "type": "boolean" },
+          "pageSize": { "type": "integer", "format": "int32" },
+          "unpaged": { "type": "boolean" },
+          "pageNumber": { "type": "integer", "format": "int32" }
+        }
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "direction": { "type": "string" },
+          "nullHandling": { "type": "string" },
+          "ascending": { "type": "boolean" },
+          "property": { "type": "string" },
+          "ignoreCase": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

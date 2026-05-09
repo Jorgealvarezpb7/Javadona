@@ -1,0 +1,466 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Inventory Service API",
+    "description": "Product catalogue and stock management per store",
+    "version": "1.0.0"
+  },
+  "servers": [
+    { "url": "http://localhost:8084", "description": "Generated server url" }
+  ],
+  "paths": {
+    "/api/v1/inventory/stock/{salesPointId}/{productId}": {
+      "get": {
+        "tags": ["stock-controller"],
+        "operationId": "getStockForProduct",
+        "parameters": [
+          {
+            "name": "salesPointId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/StockResponse" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["stock-controller"],
+        "operationId": "adjustStock",
+        "parameters": [
+          {
+            "name": "salesPointId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StockAdjustmentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/StockResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventory/products/{id}": {
+      "get": {
+        "tags": ["product-controller"],
+        "operationId": "getProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ProductResponse" }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["product-controller"],
+        "operationId": "updateProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateProductRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ProductResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventory/stock/increment": {
+      "post": {
+        "tags": ["stock-controller"],
+        "operationId": "incrementStock",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StockIncrementRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v1/inventory/stock/decrement": {
+      "post": {
+        "tags": ["stock-controller"],
+        "operationId": "decrementStock",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/StockDecrementRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v1/inventory/products": {
+      "get": {
+        "tags": ["product-controller"],
+        "operationId": "listProducts",
+        "parameters": [
+          {
+            "name": "pageable",
+            "in": "query",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/Pageable" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/PageProductResponse" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["product-controller"],
+        "operationId": "createProduct",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateProductRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ProductResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventory/products/{id}/deactivate": {
+      "patch": {
+        "tags": ["product-controller"],
+        "operationId": "deactivateProduct",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v1/inventory/stock/{salesPointId}": {
+      "get": {
+        "tags": ["stock-controller"],
+        "operationId": "getStockForSalesPoint",
+        "parameters": [
+          {
+            "name": "salesPointId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/StockResponse" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventory/stock/{salesPointId}/low-stock": {
+      "get": {
+        "tags": ["stock-controller"],
+        "operationId": "getLowStockItems",
+        "parameters": [
+          {
+            "name": "salesPointId",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string", "format": "uuid" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/StockResponse" }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/inventory/products/barcode/{ean}": {
+      "get": {
+        "tags": ["product-controller"],
+        "operationId": "getProductByBarcode",
+        "parameters": [
+          {
+            "name": "ean",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": { "$ref": "#/components/schemas/ProductResponse" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "StockAdjustmentRequest": {
+        "type": "object",
+        "properties": {
+          "newStock": { "minimum": 0, "type": "integer", "format": "int32" },
+          "minimumStock": { "minimum": 0, "type": "integer", "format": "int32" }
+        }
+      },
+      "StockResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "salesPointId": { "type": "string", "format": "uuid" },
+          "productId": { "type": "string", "format": "uuid" },
+          "currentStock": { "type": "integer", "format": "int32" },
+          "minimumStock": { "type": "integer", "format": "int32" },
+          "lastUpdated": { "type": "string", "format": "date-time" }
+        }
+      },
+      "UpdateProductRequest": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "category": {
+            "type": "string",
+            "enum": [
+              "DAIRY",
+              "BAKERY",
+              "PRODUCE",
+              "MEAT",
+              "BEVERAGES",
+              "FROZEN",
+              "PERSONAL_CARE",
+              "CLEANING",
+              "OTHER"
+            ]
+          },
+          "barcodeValue": { "pattern": "\\d{13}", "type": "string" },
+          "basePrice": { "type": "number" }
+        }
+      },
+      "ProductResponse": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "format": "uuid" },
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "category": { "type": "string" },
+          "barcodeValue": { "type": "string" },
+          "basePrice": { "type": "number" },
+          "active": { "type": "boolean" }
+        }
+      },
+      "StockIncrementRequest": {
+        "type": "object",
+        "properties": {
+          "salesPointId": { "type": "string", "format": "uuid" },
+          "lines": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/StockLineItem" }
+          }
+        }
+      },
+      "StockLineItem": {
+        "type": "object",
+        "properties": {
+          "productId": { "type": "string", "format": "uuid" },
+          "quantity": { "type": "integer", "format": "int32" }
+        }
+      },
+      "StockDecrementRequest": {
+        "type": "object",
+        "properties": {
+          "salesPointId": { "type": "string", "format": "uuid" },
+          "lines": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/StockLineItem" }
+          }
+        }
+      },
+      "CreateProductRequest": {
+        "required": ["barcodeValue", "basePrice", "category", "name"],
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "category": {
+            "type": "string",
+            "enum": [
+              "DAIRY",
+              "BAKERY",
+              "PRODUCE",
+              "MEAT",
+              "BEVERAGES",
+              "FROZEN",
+              "PERSONAL_CARE",
+              "CLEANING",
+              "OTHER"
+            ]
+          },
+          "barcodeValue": { "pattern": "\\d{13}", "type": "string" },
+          "basePrice": { "type": "number" }
+        }
+      },
+      "Pageable": {
+        "type": "object",
+        "properties": {
+          "page": { "minimum": 0, "type": "integer", "format": "int32" },
+          "size": { "minimum": 1, "type": "integer", "format": "int32" },
+          "sort": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "PageProductResponse": {
+        "type": "object",
+        "properties": {
+          "totalPages": { "type": "integer", "format": "int32" },
+          "totalElements": { "type": "integer", "format": "int64" },
+          "size": { "type": "integer", "format": "int32" },
+          "content": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/ProductResponse" }
+          },
+          "number": { "type": "integer", "format": "int32" },
+          "sort": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SortObject" }
+          },
+          "pageable": { "$ref": "#/components/schemas/PageableObject" },
+          "numberOfElements": { "type": "integer", "format": "int32" },
+          "first": { "type": "boolean" },
+          "last": { "type": "boolean" },
+          "empty": { "type": "boolean" }
+        }
+      },
+      "PageableObject": {
+        "type": "object",
+        "properties": {
+          "offset": { "type": "integer", "format": "int64" },
+          "sort": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/SortObject" }
+          },
+          "unpaged": { "type": "boolean" },
+          "pageNumber": { "type": "integer", "format": "int32" },
+          "paged": { "type": "boolean" },
+          "pageSize": { "type": "integer", "format": "int32" }
+        }
+      },
+      "SortObject": {
+        "type": "object",
+        "properties": {
+          "direction": { "type": "string" },
+          "nullHandling": { "type": "string" },
+          "ascending": { "type": "boolean" },
+          "property": { "type": "string" },
+          "ignoreCase": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}
