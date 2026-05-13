@@ -120,3 +120,15 @@ k8s-hosts:
 # Starts the React frontend (in development mode)
 web-dev:
     cd web && bun run dev
+
+# Build the faker-client Rust binary
+seed-build:
+    cd faker-client && cargo build --release
+
+# Seed the API Gateway with fake interrelated data (services must be running)
+seed base_url="http://localhost:8080":
+    cd faker-client && cargo run --release -- --base-url {{base_url}}
+
+# Seed with a fixed RNG seed for reproducible data
+seed-fixed base_url="http://localhost:8080" seed="42":
+    cd faker-client && cargo run --release -- --base-url {{base_url}} --seed {{seed}}

@@ -1,0 +1,23 @@
+[package]
+name = "faker-client"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "faker_client"
+path = "src/lib.rs"
+
+[[bin]]
+name = "faker-client"
+path = "src/bin/main.rs"
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+fake = { version = "2", features = ["derive"] }
+rand = "0.8"
+reqwest = { version = "0.12", features = ["json"] }
+serde = { version = "1",    features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1",    features = ["full"] }
+toml  = "0.8"
